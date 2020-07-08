@@ -28,4 +28,10 @@ export default {
     const data = await request.json();
     return data;
   },
+
+  async getReverseLocation (lat: number, lon: number) {
+    const request = await fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&&appid=${API_KEY}`)
+    const data = await request.json()
+    return data.name
+  }
 };

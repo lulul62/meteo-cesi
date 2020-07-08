@@ -1,4 +1,4 @@
-import React, {useState, } from 'react';
+import React, {useState, useEffect } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonToast } from '@ionic/react';
 import SearchBar from '../components/SearchBar';
 import './Tab1.css';
@@ -9,6 +9,7 @@ const Tab1: React.FC = () => {
 
   const [currentWeather, setCurrentWeather] = useState(null);
   const [currentForecast, setCurrentForecast] = useState(null)
+  const [geolocHasBeenDone, setGeolocHasBeenDone] = useState(false);
   const [showToast, setShowToast] = useState(null);
 
   /**
@@ -33,7 +34,22 @@ const Tab1: React.FC = () => {
 const getForecast = async (lat: number, lon: number) => {
   const data = await weather.getForecast(lat, lon)
   setCurrentForecast(data)
+  setGeolocHasBeenDone(true)
 }
+
+/**
+ * UseEffect + geolocation 
+ */
+useEffect(() => {
+  if ("geolocation" in navigator && !geolocHasBeenDone) {
+    navigator.geolocation.getCurrentPosition(async position => {
+      const city = await weather.getReverseLocation(position.coords.latitude, position.coords.longitude)
+      await getWeather(city)
+    });
+  } else {
+     return 
+  }
+});
 
   return (
     <IonPage>

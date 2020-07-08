@@ -26,6 +26,7 @@ const WeatherDetail: React.FC<WeatherDetailProps> = ({
   const formatTemperature = (temp: number) => `${(temp - 273.15).toFixed(0)}°`;
   const formatDateTime = (dt: number, formatType : string) => moment.unix(dt).format(formatType) 
 
+  
   return (
     <Fragment>
       {weather && currentForecast && (
