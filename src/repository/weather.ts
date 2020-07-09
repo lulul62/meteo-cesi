@@ -6,11 +6,12 @@ export default {
    * @param location : string
    */
   async getWeather(location: string) {
+
     const request = await fetch(
       `http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${API_KEY}`
     );
-
     const data = await request.json();
+
     if(data.cod === "404") {
       return false
     }
