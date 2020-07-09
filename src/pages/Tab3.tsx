@@ -1,23 +1,61 @@
-import React from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import './Tab3.css';
-import {DB} from '../env'
-import { add } from 'ionicons/icons';
+import React, { useState, Fragment } from "react";
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+  IonButton,
+  IonItem,
+  IonInput,
+  IonToast
+} from "@ionic/react";
+import ExploreContainer from "../components/ExploreContainer";
+import "./Tab3.css";
+import { DB } from "../env";
+import helpers from "../helpers/helpers";
+import { addOutline } from "ionicons/icons";
 
 const Tab3: React.FC = () => {
-  const addCity = () => {
-    DB.collection("WeatherList").doc().set({
-      city: "Los Angeles",
-  })
-  .then(function() {
-      console.log("Document successfully written!");
-  })
-  .catch(function(error) {
-      console.error("Error writing document: ", error);
-  });
-  }
+  const [newCity, setnewCity] = useState("");
+  const [notification, setNotification] = useState("");
+
+
+
+  const addCity = async () => {
+    const errorForm = await checkErrorForm()
+    if (errorForm) {
+      await DB.collection("WeatherList").doc().set({ city: newCity.trim() });
+      setNotification(`${newCity} à été ajouté à votre liste météo !`);
+      setnewCity("")
+    }
+  };
+
+  const checkErrorForm = async () => {
+    setNotification("")
+    const cityExist = await helpers.getWeather(newCity);
+    if (!cityExist) {
+      setNotification("Cette ville n'existe pas");
+      return;
+    }
+    const documents = await DB.collection("WeatherList").get();
+
+    let cityExistDatabase = false;
+    documents.forEach((doc) => {
+      if (doc.data().city === newCity) {
+        cityExistDatabase = true;
+        return;
+      }
+    });
+
+    if (cityExistDatabase) {
+      setNotification("Cette ville est déja enregistré");
+      return;
+    }
+    return true;
+  };
   return (
+    <Fragment>
     <IonPage>
       <IonHeader>
         <IonToolbar>
@@ -27,12 +65,35 @@ const Tab3: React.FC = () => {
       <IonContent>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Tab 3</IonTitle>
+            <IonTitle size="large">Favoris</IonTitle>
           </IonToolbar>
         </IonHeader>
-       <IonButton onClick={() => addCity()}>Ajouter la ville</IonButton>
+
+        <IonItem>
+          <IonInput
+            value={newCity}
+            placeholder="Entrez le nom de votre ville"
+            onIonChange={(e) => setnewCity(e.detail.value!)}
+          ></IonInput>
+        </IonItem>
+
+        <IonButton
+          disabled={newCity.length === 0 ? true : false}
+          onClick={() => addCity()}
+          expand="block"
+        >
+          Ajouter la ville
+        </IonButton>
       </IonContent>
     </IonPage>
+     <IonToast
+     isOpen={notification.length > 0 ? true : false}
+     onDidDismiss={() => setNotification("")}
+     message={notification}
+     position="bottom"
+     duration={1000}
+   />
+   </Fragment>
   );
 };
 
