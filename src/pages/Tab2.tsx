@@ -19,28 +19,14 @@ import firebase from "firebase";
 import helpers from "../helpers/helpers";
 import moment from 'moment'
 import "./Tab2.css";
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBCGUH7lP_dbFBT99EnqsLGGBFWn5PIhSk",
-  authDomain: "testcesimeteo.firebaseapp.com",
-  databaseURL: "https://testcesimeteo.firebaseio.com",
-  projectId: "testcesimeteo",
-  storageBucket: "testcesimeteo.appspot.com",
-  messagingSenderId: "79665149858",
-  appId: "1:79665149858:web:ee16bd194edbd21bcc64fb",
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.firestore();
+import {DB} from '../env'
 
 const Tab2: React.FC = () => {
   const [citys, setCitys] = useState(null);
 
   useEffect(() => {
     async function getWeatherFromList() {
-      const documents = await db.collection("WeatherList").get();
+      const documents = await DB.collection("WeatherList").get();
       let citys = [];
       documents.forEach((doc) => {
         citys.push(doc.data());
