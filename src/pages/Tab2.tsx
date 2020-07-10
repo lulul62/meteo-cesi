@@ -20,7 +20,7 @@ import ExploreContainer from "../components/ExploreContainer";
 import firebase from "firebase";
 import helpers from "../helpers/helpers";
 import moment from 'moment'
-import "./Tab2.css";
+import "Tab2.css";
 import {DB} from '../env'
  
 const Tab2: React.FC = () => {
