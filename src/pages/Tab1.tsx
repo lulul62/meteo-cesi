@@ -1,7 +1,6 @@
 import React, {useState, useEffect } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonToast } from '@ionic/react';
 import SearchBar from '../components/SearchBar';
-import 'Tab1.css';
 import WeatherDetail from '../components/WeatherDetail';
 import weather from '../repository/weather'
 
